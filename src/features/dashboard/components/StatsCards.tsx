@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowUpRight } from "lucide-react";
 
 const stats = [
   { label: "Total Users", value: "842,019", change: "+ 36% ↑" },

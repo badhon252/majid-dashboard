@@ -1,13 +1,17 @@
-import axios from "axios";
+import { api } from "@/lib/api";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+export const getAllInvoices = async () => {
+  const response = await api.get("/payment/all-payments");
+  return response.data;
+};
 
-export async function getInvoices(params?: Record<string, unknown>) {
-  const res = await axios.get(`${BASE_URL}/invoices`, { params });
-  return res.data;
-}
+export const getMyInvoices = async () => {
+  const response = await api.get("/payment/my-payments");
+  return response.data;
+};
 
-export async function getInvoiceById(id: string) {
-  const res = await axios.get(`${BASE_URL}/invoices/${id}`);
-  return res.data;
-}
+export const getInvoiceById = async (id: string) => {
+  // Assuming we can fetch a single payment record
+  const response = await api.get(`/payment/${id}`);
+  return response.data;
+};

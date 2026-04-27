@@ -7,7 +7,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Eye, Download, Trash2, Calendar } from "lucide-react";
+import { Search, Eye, Download, Trash2, Calendar } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -18,6 +18,8 @@ import {
 
 import { InvoicePreviewModal } from "./InvoicePreviewModal";
 
+import { useInvoices } from "../hooks/useInvoices";
+
 export interface Invoice {
   id: string;
   customer: string;
@@ -26,19 +28,38 @@ export interface Invoice {
   status: "PAID" | "PENDING" | "OVERDUE";
 }
 
-const mockData: Invoice[] = Array.from({ length: 12 }).map((_, i) => ({
-  id: `INV-8842`,
-  customer: "Sarah Jenkins",
-  amount: "$1,200.00",
-  date: "Oct 12, 2023",
-  status: "PAID",
-}));
-
 import { cn } from "@/lib/utils";
 
 export function InvoiceTable() {
   const [page, setPage] = useState(1);
+  const { data: invoicesData, isLoading } = useInvoices({ page });
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+
+  interface InvoiceApiRecord {
+    _id: string;
+    user?: {
+      firstName?: string;
+      lastName?: string;
+    };
+    amount: number;
+    createdAt: string;
+    status: string;
+  }
+
+  const invoices: Invoice[] =
+    invoicesData?.data?.map((p: InvoiceApiRecord) => ({
+      id: p._id.substring(0, 8).toUpperCase(),
+      customer: p.user?.firstName
+        ? `${p.user.firstName} ${p.user.lastName}`
+        : "Unknown Customer",
+      amount: `$${p.amount.toFixed(2)}`,
+      date: new Date(p.createdAt).toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      status: p.status === "completed" ? "PAID" : "PENDING",
+    })) || [];
 
   const columns: ColumnDef<Invoice>[] = [
     {
@@ -140,15 +161,16 @@ export function InvoiceTable() {
         </div>
       </div>
 
-      <DataTable columns={columns} data={mockData} />
+      <DataTable columns={columns} data={invoices} isLoading={isLoading} />
 
       <div className="flex items-center justify-between mt-6">
         <p className="text-xs text-muted-foreground">
-          Showing 1 to 10 of 1,482 invoices
+          Showing {invoices.length} of {invoicesData?.meta?.totalItems || 0}{" "}
+          invoices
         </p>
         <Pagination
           currentPage={page}
-          totalPages={148}
+          totalPages={invoicesData?.meta?.totalPages || 1}
           onPageChange={setPage}
         />
       </div>

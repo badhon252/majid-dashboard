@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 
 import { TransactionDetailsModal } from "./TransactionDetailsModal";
 
+import { useAllPayments } from "../hooks/usePayments";
+
 export interface Payment {
   id: string;
   user: string;
@@ -19,20 +21,37 @@ export interface Payment {
   status: "PAID" | "PENDING";
 }
 
-// Columns definition moved inside the component
-
-const mockData: Payment[] = Array.from({ length: 12 }).map((_, i) => ({
-  id: `INV-8842`,
-  user: "Sarah Jenkins",
-  amount: "$1,200.00",
-  date: "Oct 12, 2023",
-  status: "PAID",
-}));
+interface PaymentApiRecord {
+  _id: string;
+  user?: {
+    firstName?: string;
+    lastName?: string;
+  };
+  amount: number;
+  createdAt: string;
+  status: string;
+}
 
 export function PaymentHistoryTable() {
   const [page, setPage] = useState(1);
+  const { data: paymentsData, isLoading } = useAllPayments();
   const [selectedTransaction, setSelectedTransaction] =
     useState<Payment | null>(null);
+
+  const payments: Payment[] =
+    paymentsData?.data?.map((p: PaymentApiRecord) => ({
+      id: p._id.substring(0, 8).toUpperCase(),
+      user: p.user?.firstName
+        ? `${p.user.firstName} ${p.user.lastName}`
+        : "Unknown User",
+      amount: `$${p.amount.toFixed(2)}`,
+      date: new Date(p.createdAt).toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      status: p.status === "completed" ? "PAID" : "PENDING",
+    })) || [];
 
   const columns: ColumnDef<Payment>[] = [
     {
@@ -107,9 +126,13 @@ export function PaymentHistoryTable() {
 
   return (
     <div className="space-y-6">
-      <DataTable columns={columns} data={mockData} />
+      <DataTable columns={columns} data={payments} isLoading={isLoading} />
       <div className="flex items-center justify-center mt-8">
-        <Pagination currentPage={page} totalPages={6} onPageChange={setPage} />
+        <Pagination
+          currentPage={page}
+          totalPages={paymentsData?.meta?.totalPages || 1}
+          onPageChange={setPage}
+        />
       </div>
 
       <TransactionDetailsModal

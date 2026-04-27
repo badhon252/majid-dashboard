@@ -5,6 +5,8 @@ import { DataTable } from "@/components/ui/data-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
+import { useUsers } from "../../users/hooks/useUsers";
+
 interface User {
   id: string;
   name: string;
@@ -60,46 +62,32 @@ const columns: ColumnDef<User>[] = [
   },
 ];
 
-const data: User[] = [
-  {
-    id: "1",
-    name: "Edward",
-    deviceName: "iPhone 15 Pro",
-    price: "$42.00",
-    date: "March 13, 2014",
-    contract: "(704) 555-0127",
-    avatar: "https://i.pravatar.cc/150?u=edward",
-  },
-  {
-    id: "2",
-    name: "Sophia",
-    deviceName: "Samsung Galaxy S23",
-    price: "$39.00",
-    date: "February 28, 2023",
-    contract: "(202) 555-0198",
-    avatar: "https://i.pravatar.cc/150?u=sophia",
-  },
-  {
-    id: "3",
-    name: "Liam",
-    deviceName: "Google Pixel 7",
-    price: "$35.00",
-    date: "January 15, 2023",
-    contract: "(415) 555-0142",
-    avatar: "https://i.pravatar.cc/150?u=liam",
-  },
-  {
-    id: "4",
-    name: "Olivia",
-    deviceName: "OnePlus 11",
-    price: "$32.00",
-    date: "April 5, 2023",
-    contract: "(305) 555-0186",
-    avatar: "https://i.pravatar.cc/150?u=olivia",
-  },
-];
+interface UserApiRecord {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  deviceName?: string;
+  price?: string;
+  createdAt?: string;
+  phone?: string;
+  email: string;
+  image?: { url: string };
+}
 
 export function RecentUsersTable() {
+  const { data: usersData, isLoading } = useUsers();
+
+  const users: User[] =
+    usersData?.data?.slice(0, 5).map((u: UserApiRecord) => ({
+      id: u._id,
+      name: `${u.firstName} ${u.lastName}`,
+      deviceName: u.deviceName || "N/A",
+      price: u.price || "$0.00",
+      date: u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "N/A",
+      contract: u.phone || u.email,
+      avatar: u.image?.url || `https://i.pravatar.cc/150?u=${u._id}`,
+    })) || [];
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-1">
@@ -108,7 +96,7 @@ export function RecentUsersTable() {
           Real-time device integrity metrics and verification health.
         </p>
       </div>
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={users} isLoading={isLoading} />
       <div className="flex justify-end mt-4">
         <Button className="bg-primary hover:bg-primary/90 text-white rounded-lg px-8">
           View All

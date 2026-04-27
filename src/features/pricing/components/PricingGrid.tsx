@@ -8,55 +8,79 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Zap, MapPin, Shield, Diamond } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const plans = [
-  {
-    title: "Starter",
-    badge: "STARTER",
-    price: "$0",
-    period: "/month",
-    color: "blue",
-    features: [
-      { text: "2 Free Checks", icon: Check },
-      { text: "Basic Device Report", icon: Check },
-      { text: "Free AI Explanation", icon: Check },
-    ],
-  },
-  {
-    title: "Best Value",
-    badge: "BEST VALUE",
-    price: "$2 - $30",
-    period: "",
-    color: "green",
-    features: [
-      { text: "Top-up from $2 to $30", icon: Zap },
-      { text: "Free AI explanation", icon: MapPin },
-      { text: "No subscription required", icon: Shield },
-      { text: "Credits never expire", icon: History },
-    ],
-  },
-  {
-    title: "Enterprise",
-    price: "",
-    period: "",
-    color: "purple",
-    features: [
-      { text: "Top-up from $2 to $30", icon: Zap },
-      { text: "Free AI explanation", icon: MapPin },
-      { text: "No subscription required", icon: Shield },
-    ],
-    offer: { icon: Diamond, text: "Diamond", discount: "10% Off" },
-  },
-];
+import { useSubscriptions } from "../hooks/usePricing";
 
-import { History } from "lucide-react";
+interface SubscriptionPlan {
+  _id: string;
+  title: string;
+  badge?: string;
+  price?: {
+    amount?: number;
+    min?: number;
+    max?: number;
+  };
+  billingModel: string;
+  isFree: boolean;
+  features: Array<string | { name: string; included?: boolean }>;
+}
+
+interface ProcessedPlan {
+  id: string;
+  title: string;
+  badge?: string;
+  price: string;
+  period: string;
+  color: string;
+  features: Array<{ text: string; icon: React.ElementType }>;
+}
 
 export function PricingGrid() {
+  const { data: subscriptionsData, isLoading } = useSubscriptions();
+
+  const plans: ProcessedPlan[] =
+    subscriptionsData?.data?.map((p: SubscriptionPlan) => ({
+      id: p._id,
+      title: p.title,
+      badge: p.badge,
+      price:
+        p.price?.amount !== undefined
+          ? `$${p.price.amount}`
+          : p.price?.min
+            ? `$${p.price.min} - $${p.price.max}`
+            : "Contact Us",
+      period: p.billingModel === "subscription" ? "/month" : "",
+      color: p.isFree
+        ? "blue"
+        : p.billingModel === "one-time"
+          ? "green"
+          : "purple",
+      features: p.features.map(
+        (f: string | { name: string; included?: boolean }) => ({
+          text: typeof f === "string" ? f : f.name,
+          icon: Check,
+        }),
+      ),
+    })) || [];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-[400px] bg-muted animate-pulse rounded-2xl"
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {plans.map((plan, i) => (
+      {plans.map((plan: ProcessedPlan, i: number) => (
         <Card
           key={i}
           className={cn(
@@ -100,34 +124,29 @@ export function PricingGrid() {
             </div>
           </CardHeader>
           <CardContent className="px-8 py-6 space-y-4">
-            {plan.features.map((feature, j) => (
-              <div key={j} className="flex items-center gap-3">
-                <div
-                  className={cn(
-                    "p-1 rounded-full",
-                    plan.color === "blue"
-                      ? "text-blue-500"
-                      : plan.color === "green"
-                        ? "text-green-500"
-                        : "text-purple-500",
-                  )}
-                >
-                  <feature.icon className="w-4 h-4" />
+            {plan.features.map(
+              (
+                feature: { text: string; icon: React.ElementType },
+                j: number,
+              ) => (
+                <div key={j} className="flex items-center gap-3">
+                  <div
+                    className={cn(
+                      "p-1 rounded-full",
+                      plan.color === "blue"
+                        ? "text-blue-500"
+                        : plan.color === "green"
+                          ? "text-green-500"
+                          : "text-purple-500",
+                    )}
+                  >
+                    <feature.icon className="w-4 h-4" />
+                  </div>
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {feature.text}
+                  </span>
                 </div>
-                <span className="text-sm font-medium text-muted-foreground">
-                  {feature.text}
-                </span>
-              </div>
-            ))}
-
-            {plan.offer && (
-              <div className="mt-8 bg-white rounded-xl p-3 flex items-center justify-between border border-border/50">
-                <div className="flex items-center gap-2">
-                  <plan.offer.icon className="w-4 h-4 text-blue-500" />
-                  <span className="text-xs font-bold">{plan.offer.text}</span>
-                </div>
-                <span className="text-xs font-bold">{plan.offer.discount}</span>
-              </div>
+              ),
             )}
           </CardContent>
           <CardFooter className="px-8 pb-8 pt-4">

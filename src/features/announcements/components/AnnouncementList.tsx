@@ -6,56 +6,39 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { CreateMessageModal } from "./CreateMessageModal";
 
-const mockAnnouncements = [
-  {
-    id: 1,
-    title: "Device Scan",
-    description:
-      "Hi, I'm getting an error when I try to run the Device Scan. Please assist.",
-    time: "1H AGO",
-  },
-  {
-    id: 2,
-    title: "API Inquiry",
-    description:
-      "Where can I find the API documentation for integrating the verify endpoint?",
-    time: "1H AGO",
-  },
-  {
-    id: 3,
-    title: "Billing Clarification",
-    description:
-      "I was charged twice for the last transaction. Can you please check my account?",
-    time: "1H AGO",
-  },
-  {
-    id: 4,
-    title: "User Seat Management",
-    description: "How do I remove a user seat that is no longer active?",
-    time: "1H AGO",
-  },
-  {
-    id: 5,
-    title: "User Seat Management",
-    description: "How do I remove a user seat that is no longer active?",
-    time: "1H AGO",
-  },
-  {
-    id: 6,
-    title: "User Seat Management",
-    description: "How do I remove a user seat that is no longer active?",
-    time: "1H AGO",
-  },
-  {
-    id: 7,
-    title: "User Seat Management",
-    description: "How do I remove a user seat that is no longer active?",
-    time: "1H AGO",
-  },
-];
+import { useAnnouncements } from "../hooks/useAnnouncements";
+
+interface AnnouncementApiRecord {
+  _id: string;
+  title?: string;
+  message?: string;
+  description?: string;
+  createdAt?: string;
+}
+
+interface Announcement {
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+}
 
 export function AnnouncementList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: announcementsData, isLoading } = useAnnouncements();
+
+  const announcements: Announcement[] =
+    announcementsData?.data?.map((a: AnnouncementApiRecord) => ({
+      id: a._id,
+      title: a.title || "Notification",
+      description: a.message || a.description,
+      time: a.createdAt
+        ? new Date(a.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : "N/A",
+    })) || [];
 
   return (
     <div className="space-y-6">
@@ -85,24 +68,34 @@ export function AnnouncementList() {
       </div>
 
       <div className="space-y-0">
-        {mockAnnouncements.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-start justify-between py-5 border-b border-border/50 hover:bg-muted/30 transition-colors px-2 rounded-lg cursor-pointer"
-          >
-            <div className="flex flex-col gap-1">
-              <span className="font-bold text-foreground text-sm">
-                {item.title}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {item.description}
-              </span>
-            </div>
-            <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
-              {item.time}
-            </span>
-          </div>
-        ))}
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="py-5 border-b border-border/50 animate-pulse"
+              >
+                <div className="h-4 bg-muted w-1/4 rounded mb-2" />
+                <div className="h-3 bg-muted w-3/4 rounded" />
+              </div>
+            ))
+          : announcements.map((item: Announcement) => (
+              <div
+                key={item.id}
+                className="flex items-start justify-between py-5 border-b border-border/50 hover:bg-muted/30 transition-colors px-2 rounded-lg cursor-pointer"
+              >
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold text-foreground text-sm">
+                    {item.title}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {item.description}
+                  </span>
+                </div>
+                <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
+                  {item.time}
+                </span>
+              </div>
+            ))}
       </div>
 
       <CreateMessageModal

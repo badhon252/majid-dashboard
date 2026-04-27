@@ -1,13 +1,8 @@
-import axios from "axios";
+import { api } from "@/lib/api";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export async function getDashboardStats() {
-  const res = await axios.get(`${BASE_URL}/dashboard/stats`);
-  return res.data;
-}
-
-export async function getDashboardOverview() {
-  const res = await axios.get(`${BASE_URL}/dashboard/overview`);
-  return res.data;
-}
+export const getChartData = async (filter?: string) => {
+  const response = await api.get("/dashboard/chart", {
+    params: { filter },
+  });
+  return response.data;
+};
