@@ -46,37 +46,34 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: #2d2d2d;
-  --primary: #ff8b36;
-  --primary-foreground: #343a40;
-  --secondary: #fbf4ea;
-  --secondary-foreground: #2d2d2d;
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: #b9af9;
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #f8fafc;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --primary: #84c225;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #111827;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f1f5f9;
+  --accent-foreground: #111827;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #84c225;
+  
+  /* Sidebar */
+  --sidebar-background: #ffffff;
+  --sidebar-foreground: #64748b;
+  --sidebar-primary: #84c225;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f8fafc;
+  --sidebar-accent-foreground: #84c225;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #84c225;
 }
 
 .dark {
@@ -131,3 +128,256 @@
     font-family: "Poppins", sans-serif;
   }
 }
+
+/* ================================================
+   Auth Pages – imoscan design system
+   ================================================ */
+
+.auth-bg {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eef3f5;
+  padding: 1.5rem;
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.5rem 2.25rem;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.07);
+}
+
+/* Logo */
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.auth-logo-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #84c225;
+  letter-spacing: -0.5px;
+}
+
+.auth-logo-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-logo-badge svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Title */
+.auth-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+/* Subtitle */
+.auth-subtitle {
+  font-size: 0.825rem;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+.auth-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Input wrapper */
+.auth-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Input */
+.auth-input {
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0 2.5rem 0 1.125rem;
+  font-size: 0.875rem;
+  color: #374151;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+}
+
+.auth-input::placeholder {
+  color: #b0b7c3;
+}
+
+.auth-input:focus {
+  border-color: #84c225;
+}
+
+/* Eye toggle */
+.auth-eye-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.auth-eye-btn:hover {
+  color: #6b7280;
+}
+
+/* Remember me row */
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0.25rem 0;
+}
+
+.auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.825rem;
+  color: #374151;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-checkbox {
+  width: 15px;
+  height: 15px;
+  accent-color: #84c225;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+/* Forgot link */
+.auth-link {
+  font-size: 0.825rem;
+  color: #374151;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.auth-link:hover {
+  color: #84c225;
+}
+
+/* Primary CTA button */
+.auth-btn {
+  width: 100%;
+  height: 44px;
+  background: linear-gradient(90deg, #84c225 0%, #70a81f 100%);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.auth-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.auth-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Resend OTP link/button */
+.auth-resend-btn {
+  margin-top: 1rem;
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: #84c225;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+  transition: opacity 0.15s;
+}
+
+.auth-resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* OTP row */
+.otp-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+/* OTP individual box */
+.otp-input {
+  width: 46px;
+  height: 52px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 1.35rem;
+  font-weight: 600;
+  text-align: center;
+  color: #111827;
+  background: #f3f4f6;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+  caret-color: #84c225;
+}
+
+.otp-input:focus {
+  border-color: #84c225;
+  background: #fff;
+}
+
+.otp-input--filled {
+  background: #fff;
+  border-color: #d1d5db;
+}
+
