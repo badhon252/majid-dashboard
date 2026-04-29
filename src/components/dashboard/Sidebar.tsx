@@ -16,6 +16,7 @@ import { useMyProfile } from "@/features/users/hooks/useUsers";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 const navItems = [
   { label: "Dashboard Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -35,18 +36,7 @@ export function Sidebar() {
     <aside className="w-64 h-screen bg-sidebar-background border-r border-sidebar-border flex flex-col fixed left-0 top-0">
       {/* Logo */}
       <div className="p-6 flex items-center gap-2">
-        <span className="text-2xl font-bold text-primary">imoscan</span>
-        <div className="bg-blue-500 rounded-full p-0.5">
-          <svg width="14" height="14" viewBox="0 0 22 22" fill="none">
-            <path
-              d="M6.5 11.2L9.5 14.2L15.5 8"
-              stroke="white"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
+        <Image src="/images/logo.svg" alt="Logo" width={200} height={100} />
       </div>
 
       {/* Navigation */}
